@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    namespace: #{k8sNamespace}
+    name: #{serviceName}
+    labels:
+        app: #{serviceName}
+spec:
+    replicas: #{containercount}
+    selector:
+        matchLabels:
+            app: #{serviceName}
+    strategy: {}
+    template:
+        metadata:
+            labels:
+                app: #{serviceName}
+        spec:
+            containers:
+                - image: investips.azurecr.io/#{k8sDockerImage}
+                  name: #{serviceName}
+                  env:
+                      - name: isKube
+                        value: 'true'
+                  ports:
+                      - name: http
+                        containerPort: 80
+                  resources:
+                      requests:
+                          memory: 128Mi
+                      limits:
+                          memory: 384Mi
+                  readinessProbe:
+                      httpGet:
+                          path: /health
+                          port: http
+                          scheme: HTTP
+                      initialDelaySeconds: 5
+                      periodSeconds: 10
+                      timeoutSeconds: 5
+                      successThreshold: 1
+                      failureThreshold: 6
+                  livenessProbe:
+                      failureThreshold: 1
+                      httpGet:
+                          path: /health
+                          port: http
+                          scheme: HTTP
+                      initialDelaySeconds: 60
+                      periodSeconds: 5
+                      successThreshold: 1
+                      timeoutSeconds: 1
+                  volumeMounts:
+                      - mountPath: /usr/share/nginx/html/config.json
+                        name: config
+                        subPath: config.json
+            restartPolicy: Always
+            volumes:
+                - name: config
+                  configMap:
+                      name: #{serviceName}-config
+            imagePullSecrets:
+                - name: regcred
+            nodeSelector:
+                kubernetes.io/os: linux

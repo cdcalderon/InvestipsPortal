@@ -1,0 +1,83 @@
+ARG nginxversion
+
+# Stage 0, based on Node.js, to build and compile Angular https://github.com/mark-adams/docker-chromium-xvfb
+# This image is built to run Karma+Headless chrome and comes pre-installed for node.
+FROM trion/ng-cli-e2e:10.1.4 as base
+ARG npmversion
+ARG ngversion
+# Take care of certificates so we can "dotnet restore" in VDI.
+RUN apt-get update && apt-get -y install ca-certificates dos2unix && rm -rf /var/cache/apk/*
+COPY ./certs/* /usr/local/share/ca-certificates/
+WORKDIR /usr/local/share/ca-certificates/
+RUN update-ca-certificates
+
+WORKDIR /app
+
+COPY package.json /app/
+COPY package-lock.json /app/
+
+RUN npm install -g npm@$npmversion
+
+RUN npm install -g @angular/cli@$ngversion
+
+RUN npm install -g sonarqube-scanner@$sonarscannerversion
+
+ENV NODE_EXTRA_CA_CERTS="/usr/local/share/ca-certificates/investips-CA.crt"
+RUN npm ci
+
+COPY ./ /app/
+COPY cypress.build.json /app/cypress.json
+COPY ./cypress/plugins/ /app/cypress/plugins/
+
+# gathering components from NPM install for linting
+FROM base as lint
+RUN ng lint
+
+# gathering components from NPM install for unit testing
+FROM base as test
+ARG branch
+ARG sonarhost
+ARG sonartoken
+ARG sonarkey
+ARG sonarscannerversion
+ARG imageversion
+ARG analysisArgs
+
+RUN echo "{}" > ./src/config.user.json
+RUN npm run test-ci
+
+RUN export coveragefiles="$(find `pwd`/coverage -name lcov.info | tr '\n' ',')" && echo $coveragefiles \
+  && echo "analysisArgs=$analysisArgs" \
+  && sonar-scanner \
+  -Dsonar.organization=investips \
+  -Dsonar.projectKey="$sonarkey" \
+  -Dsonar.projectVersion="$imageversion" \
+  $analysisArgs \
+  -Dsonar.host.url="$sonarhost" \
+  -Dsonar.login="$sonartoken" \
+  -Dsonar.sources="src" \
+  -Dsonar.javascript.lcov.reportPaths="$coveragefiles" \
+  -Dsonar.exclusions="**/node_modules/**,**/*spec.ts" \
+  -Dsonar.tests="src" \
+  -Dsonar.test.inclusions=**/*.spec.ts \
+  -Dsonar.sourceEncoding="UTF-8"
+
+RUN npm run cy-ci
+
+# gathering components from NPM install for ng build
+FROM base as build
+RUN true
+COPY ./src/config.example.json ./src/config.json
+RUN ng build --aot --configuration production
+
+# Stage 1, based on Nginx, to have only the compiled app, ready for production with Nginx
+FROM nginx:$nginxversion-alpine as publish
+ENV configpath /usr/share/nginx/html/config.json
+CMD ["/startup.sh"]
+
+RUN apk update && apk add jq bash
+COPY ./src/config.example.json /usr/share/nginx/html/config.json
+COPY --from=build /app/dist/investips-portal/ /usr/share/nginx/html
+COPY ./deploy/sh/startup.sh /startup.sh
+RUN chmod 755 /startup.sh
+COPY ./nginx.conf.example /etc/nginx/conf.d/default.conf

@@ -1,0 +1,79 @@
+@import '@angular/material/theming';
+@import '_variables';
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat-core();
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://www.google.com/design/spec/style/color.html
+$app-primary: mat-palette($mat-blue);
+$app-accent: mat-palette($mat-dark-grey, 500, 400, 700);
+
+// The warn palette is optional (defaults to red).
+$app-warn: mat-palette($mat-red);
+
+// Create the theme object (a Sass map containing all of the palettes).
+$eb-app-theme: mat-light-theme($app-primary, $app-accent, $app-warn);
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include angular-material-theme($eb-app-theme);
+
+/***
+ * Custom global styling
+ */
+
+// Recommended Angular Material icon sizing.
+.material-icons.md-18 {
+    font-size: 18px;
+    height: 18px;
+    width: 18px;
+}
+.material-icons.md-24 {
+    font-size: 24px;
+    height: 24px;
+    width: 24px;
+}
+.material-icons.md-36 {
+    font-size: 36px;
+    height: 36px;
+    width: 36px;
+}
+.material-icons.md-48 {
+    font-size: 48px;
+    height: 48px;
+    width: 48px;
+}
+
+/* Angular Table sorting arrow custom styling */
+.mat-sort-header-pointer-left,
+.mat-sort-header-pointer-right,
+.mat-sort-header-pointer-middle,
+.mat-sort-header-stem {
+    background: $color-primary !important;
+}
+
+// TODO: MD-509: Fix column sort arrow centering
+//.mat-sort-header-arrow {
+//  opacity: 0;
+//  transform: translateY(25%) !important;
+//}
+//
+//.mat-sort-header-pointer-left.ng-trigger.ng-trigger-leftPointer{
+//  // either -45 or 45 depending on whether we're asc or desc
+//  transform: rotate(-45deg) !important;
+//}
+//
+//.mat-sort-header-pointer-right.ng-trigger.ng-trigger-rightPointer{
+//  // either -45 or 45 depending on whether we're asc or desc
+//  transform: rotate(45deg) !important;
+//}
+//
+//.mat-sort-header-indicator.ng-trigger.ng-trigger-indicator{
+//  transform: translateY(0px) !important;
+//}

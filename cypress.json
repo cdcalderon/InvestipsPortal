@@ -1,0 +1,20 @@
+{
+    "baseUrl": "http://localhost:4200",
+    "watchForFileChanges": true,
+    "testFiles": "**/*.spec.ts",
+    "integrationFolder": "cypress/integration",
+    "reporterOptions": null,
+    "viewportWidth": 1920,
+    "viewportHeight": 1080,
+    "defaultCommandTimeout": 10000,
+    "execTimeout": 10000,
+    "taskTimeout": 10000,
+    "pageLoadTimeout": 10000,
+    "requestTimeout": 10000,
+    "responseTimeout": 10000,
+    "screenshotsFolder": "cypress/screenshots",
+    "trashAssetsBeforeRuns": true,
+    "videoCompression": 32,
+    "videosFolder": "cypress/videos",
+    "video": false
+}

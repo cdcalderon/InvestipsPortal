@@ -1,0 +1,12 @@
+{
+    "logging": {
+        "minimumLevel": "debug"
+    },
+    "addressApi": {
+        "url": "https://maps.googleapis.com",
+        "apiKey": "AIzaSyDjgRCG7pgLtyFrJIixFF7iU-RKHwvp600"
+    },
+    "eodhistoricaldataApi": {
+        "url": "http://localhost:7071"
+    }
+}

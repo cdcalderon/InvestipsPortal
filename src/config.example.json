@@ -1,0 +1,34 @@
+{
+    "templateApiBaseUrl": "https://prequalification-api.dev.investips.com/api/v1",
+    "production": false,
+    "timeoutIdleSecondsTimer": 900,
+    "timeoutResetSecondsTimer": 10,
+    "enableTracing": false,
+    "applicationInsights": {
+        "instrumentationKey": "",
+        "cloudRoleName": "investips-portal"
+    },
+    "identity": {
+        "authority": "https://identityserver.k8s.investips.com",
+        "clientId": "md-web",
+        "scope": "openid multidisbursement.api user-api datawarehouse-api",
+        "redirectUri": "http://localhost:4200/login-redirect",
+        "silentRedirectUri": "http://localhost:4200/silent-redirect",
+        "automaticSilentRenew": true,
+        "postLogoutRedirectUri": "http://localhost:4200/logout",
+        "responseType": "id_token token",
+        "accessTokenExpiringNotificationTime": 60,
+        "loadUserInfo": false,
+        "logLevel": 0,
+        "metadata": {
+            "issuer": "https://identityserver.k8s.investips.com",
+            "authorizationEndpoint": "https://identityserver.k8s.investips.com/connect/authorize",
+            "endSessionEndpoint": "https://identityserver.k8s.investips.com/connect/endsession",
+            "jwksUri": "https://identityserver.k8s.investips.com/.well-known/openid-configuration/jwks",
+            "checkSessionIFrame": "https://identityserver.k8s.investips.com/connect/checksession"
+        }
+    },
+    "features": {
+        "templateFeature": true
+    }
+}
