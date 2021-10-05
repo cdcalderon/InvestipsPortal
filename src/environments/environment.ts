@@ -5,6 +5,7 @@
 export const environment = {
     production: false,
     configurations: ['config.json', 'config.user.json'],
+    apiGatewayBaseUrl: 'http://localhost:50894',
 };
 
 /*

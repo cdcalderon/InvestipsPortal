@@ -8,5 +8,8 @@
     },
     "eodhistoricaldataApi": {
         "url": "http://localhost:7071"
+    },
+    "investipsApiGatewayBase": {
+        "url": "http://localhost:50894"
     }
 }

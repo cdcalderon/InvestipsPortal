@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { AddressClient } from '@app/api/address.client';
 import { EodHistoricalDataService } from '@app/api/eod-historical-data.service';
-import { tap } from 'rxjs/operators';
+import { WeeklyZigZagSignalService } from '@app/service/restServices/weekly-zig-zag-signal.service';
 
 @Component({
     selector: 'app-signals-dashboard',
@@ -9,19 +8,9 @@ import { tap } from 'rxjs/operators';
     styleUrls: ['./signals-dashboard.component.scss'],
 })
 export class SignalsDashboardComponent implements OnInit {
-    constructor(private addressClient: AddressClient, private quoteService: EodHistoricalDataService) {}
+    constructor(private weeklyZigZagSignalService: WeeklyZigZagSignalService) {}
 
     ngOnInit(): void {
-        //Just testing API, this has to be removed
-        this.addressClient
-            .getAddressFromZipcode(75013)
-            .pipe(tap((x) => console.log))
-            .subscribe();
-
-        this.quoteService.getQuote('MSFT').subscribe();
-
-        let variable;
-
-        const result = variable;
+        this.weeklyZigZagSignalService.getPublishedZigzagSignals().subscribe();
     }
 }

@@ -9,4 +9,7 @@ export interface AppConfig {
     eodhistoricaldataApi: {
         url: string;
     };
+    investipsApiGatewayBase: {
+        url: string;
+    };
 }
